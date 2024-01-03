@@ -42,9 +42,9 @@ if st.button('Me equivoqué! Quita un día'):
     if last_entry:
         last_entry_id = last_entry[0]['id']
         supabase.table("ahorrosdyf").delete().eq('id', last_entry_id).execute()
-        st.success('Last entry deleted successfully.')
+        st.success('El último día se eliminó con éxito!')
     else:
-        st.error('No entries to delete.')
+        st.error('Nada que borrar.')
 
 savings_data = get_all_savings()
 if savings_data:
