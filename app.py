@@ -51,8 +51,8 @@ if savings_data:
     df = pd.DataFrame(savings_data)[['day', 'amount']]
     df.columns = ['Día', 'Ahorro']  # Rename columns for display
     st.write("Así vamos:")
-    st.dataframe(df, index=False)
-
+    html = df.to_html(index=False)
+    st.markdown(html, unsafe_allow_html=True)
 
     # Calculate the total and display it
     total_saved = df['Ahorro'].sum()
