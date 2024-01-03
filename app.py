@@ -27,7 +27,7 @@ available_amounts = all_amounts - used_amounts
 
 st.title('Ahorros Súper Poderosos de Diego y Fer')
 
-if st.button('Dame la cantidad a ahorrar'):
+if st.button('El día de hoy ahorraremos:'):
     next_day = len(get_all_savings()) + 1
     if next_day <= 365 and available_amounts:
         amount_to_save = random.choice(list(available_amounts))
@@ -36,6 +36,15 @@ if st.button('Dame la cantidad a ahorrar'):
         st.success(f'Ahorraremos: ${amount_to_save} y es el día: {next_day}')
     else:
         st.error("Todos los días se han asignado, ¡el año está completo!")
+
+if st.button('Delete Last Entry'):
+    last_entry = supabase.table("ahorrosdyf").select("*").order("day", desc=True).limit(1).execute().data
+    if last_entry:
+        last_entry_id = last_entry[0]['id']
+        supabase.table("ahorrosdyf").delete().eq('id', last_entry_id).execute()
+        st.success('Last entry deleted successfully.')
+    else:
+        st.error('No entries to delete.')
 
 savings_data = get_all_savings()
 if savings_data:
