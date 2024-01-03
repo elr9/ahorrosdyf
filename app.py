@@ -1,72 +1,38 @@
 import streamlit as st
-import streamlit.components.v1 as components
-import random
+from supabase import create_client, Client
 import pandas as pd
 
-# Function to generate savings amounts
-def generate_savings():
-    amounts = list(range(1, 366))
-    random.shuffle(amounts)
-    return amounts
+# Initialize Supabase client
+url: str = "https://orpaeteaseulhjpvlbnr.supabase.co"
+key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGFldGVhc2V1bGhqcHZsYm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQyNTM1OTAsImV4cCI6MjAxOTgyOTU5MH0.pzaNnujkF0Ddw5mpDh8JKcgE6FKHWqBnlsSHGH_wz98"
+supabase: Client = create_client(url, key)
 
-# Initialize session state for amounts and current day
-if 'amounts' not in st.session_state or not st.session_state.amounts:
-    st.session_state.amounts = generate_savings()
+def save_day(day, amount):
+    data = {"day": day, "amount": amount}
+    # Insert the data for the given day
+    supabase.table("ahorrosdyf").insert(data).execute()
 
-if 'current_day' not in st.session_state:
-    st.session_state.current_day = 1
+def get_all_savings():
+    # Fetch all savings data
+    data = supabase.table("ahorrosdyf").select("*").order("day", True).execute()
+    return data.data if data.data else []
 
-# Load the custom component
-def load_component():
-    component = components.html(open("my_component.html").read(), height=100)
-    return component
+# Your Streamlit app logic here
+st.title('Daily Savings Tracker')
 
-# Display the custom component and interact with it
-data_from_storage = load_component()
+# Button to save amount for the next day
+next_day = len(get_all_savings()) + 1  # Assuming days are sequential and start from 1
+amount_to_save = st.number_input(f'Enter the amount to save for Day {next_day}', min_value=1, max_value=365, value=1)
 
-# Debugging: Print what 'data_from_storage' contains
-print("Data from storage:", data_from_storage)
+if st.button(f'Save for Day {next_day}'):
+    save_day(next_day, amount_to_save)
+    st.success(f'Saved ${amount_to_save} for Day {next_day}')
 
-# Verify and unpack data
-if data_from_storage and isinstance(data_from_storage, list) and len(data_from_storage) == 2:
-    st.session_state.amounts, st.session_state.current_day = data_from_storage
+# Display the table of savings
+savings_data = get_all_savings()
+if savings_data:
+    df = pd.DataFrame(savings_data)
+    st.write("Your Savings Plan:")
+    st.table(df[['day', 'amount']])
 else:
-    print("Received unexpected data format or no data")
-
-# Update local session state with data from LocalStorage if it exists
-if data_from_storage:
-    st.session_state.amounts, st.session_state.current_day = data_from_storage
-
-# App title
-st.title('Daily Savings App')
-
-# Button to generate amount for the next day
-if st.button('Save for Next Day'):
-    if st.session_state.current_day <= 365:
-        st.session_state.current_day += 1
-        # Save the updated state to LocalStorage via the custom component
-        components.html(f"""
-            <script>
-            window.parent.postMessage({{
-                type: 'streamlit:saveData',
-                value: [{st.session_state.amounts}, {st.session_state.current_day}]
-            }}, '*');
-            </script>
-        """, height=0)
-    else:
-        st.warning('You have completed the savings for the year!')
-
-# Display the amount for the current day
-if st.session_state.current_day <= 365:
-    st.write(f'Day {st.session_state.current_day}: Save ${st.session_state.amounts[st.session_state.current_day - 1]}')
-else:
-    st.write('No more savings days left this year.')
-
-# Creating a table to display the savings plan
-data = {'Day': list(range(1, st.session_state.current_day + 1)),
-        'Amount to Save': st.session_state.amounts[:st.session_state.current_day]}
-
-df = pd.DataFrame(data)
-
-# Display the table in the app
-st.table(df)
+    st.write("No savings data found.")
