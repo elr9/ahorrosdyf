@@ -25,20 +25,20 @@ all_amounts = set(range(1, 366))
 used_amounts = {x['amount'] for x in get_all_savings()}
 available_amounts = all_amounts - used_amounts
 
-st.title('Daily Savings Tracker')
+st.title('Ahorros Súper Poderosos de Diego y Fer')
 
-if st.button('Save for Next Day'):
+if st.button('Dame la cantidad a ahorrar'):
     next_day = len(get_all_savings()) + 1
     if next_day <= 365 and available_amounts:
         amount_to_save = random.choice(list(available_amounts))
         available_amounts.remove(amount_to_save)
         save_day(next_day, amount_to_save)
-        st.success(f'Saved ${amount_to_save} for Day {next_day}')
+        st.success(f'Ahorraremos ${amount_to_save} el día: {next_day}')
     else:
-        st.error("All days have been assigned or the year is complete!")
+        st.error("Todos los días se han asignado, ¡el año está completo!")
 
 savings_data = get_all_savings()
 if savings_data:
-    df = pd.DataFrame(savings_data)[['day', 'amount']]
-    st.write("Your Savings Plan:")
+    df = pd.DataFrame(savings_data)[['Día', 'Ahorro']]
+    st.write("Así va el plan:")
     st.table(df)
