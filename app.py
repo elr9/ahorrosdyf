@@ -37,7 +37,7 @@ if st.button('El día de hoy ahorraremos:'):
     else:
         st.error("Todos los días se han asignado, ¡el año está completo!")
 
-if st.button('Delete Last Entry'):
+if st.button('Me equivoqué! Quita un día'):
     last_entry = supabase.table("ahorrosdyf").select("*").order("day", desc=True).limit(1).execute().data
     if last_entry:
         last_entry_id = last_entry[0]['id']
