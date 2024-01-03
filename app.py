@@ -33,12 +33,13 @@ if st.button('Dame la cantidad a ahorrar'):
         amount_to_save = random.choice(list(available_amounts))
         available_amounts.remove(amount_to_save)
         save_day(next_day, amount_to_save)
-        st.success(f'Ahorraremos ${amount_to_save} el día: {next_day}')
+        st.success(f'Ahorraremos: ${amount_to_save} y es el día: {next_day}')
     else:
         st.error("Todos los días se han asignado, ¡el año está completo!")
 
 savings_data = get_all_savings()
 if savings_data:
     df = pd.DataFrame(savings_data)[['day', 'amount']]
-    st.write("Así va el plan:")
+    df.columns = ['Día', 'Ahorro']  # Rename columns for display
+    st.write("Así vamos:")
     st.table(df)
