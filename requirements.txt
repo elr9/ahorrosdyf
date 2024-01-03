@@ -1,2 +1,2 @@
 pandas
-supabase
+st-supabase-connection
