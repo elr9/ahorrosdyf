@@ -43,3 +43,8 @@ if savings_data:
     df.columns = ['Día', 'Ahorro']  # Rename columns for display
     st.write("Así vamos:")
     st.table(df)
+
+    # Calculate the total and display it
+    total_saved = df['Amount to Save'].sum()
+    st.write(f"Total amount saved this year: ${total_saved}")
+
