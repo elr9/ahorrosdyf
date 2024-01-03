@@ -39,6 +39,6 @@ if st.button('Save for Next Day'):
 
 savings_data = get_all_savings()
 if savings_data:
-    df = pd.DataFrame(savings_data)
+    df = pd.DataFrame(savings_data)[['day', 'amount']]
     st.write("Your Savings Plan:")
     st.table(df)
