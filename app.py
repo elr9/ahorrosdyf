@@ -1,6 +1,7 @@
 import streamlit as st
 from supabase import create_client, Client
 import pandas as pd
+import random
 
 # Initialize connection.
 # Uses st.cache_resource to only run once.
@@ -13,9 +14,23 @@ def init_connection():
 supabase = init_connection()
 
 def save_day(day, amount):
-    data = {"day": day, "amount": amount}
-    # Insert the data for the given day
+    # Assuming 'day' is a number from 1 to 365
+    date = f"2024-{(day - 1) // 30 + 1:02}-{(day - 1) % 30 + 1:02}"  # Simplified month-day calculation
+    data = {"day": date, "amount": amount}
     supabase.table("ahorrosdyf").insert(data).execute()
+    next_day = len(get_all_savings()) + 1
+    amount_to_save = get_unique_amount()
+    save_day(next_day, amount_to_save)
+
+def get_unique_amount():
+    if len(used_amounts) < 365:
+        amount = random.randint(1, 365)
+        while amount in used_amounts:
+            amount = random.randint(1, 365)
+        used_amounts.add(amount)
+        return amount
+    else:
+        raise Exception("No more unique amounts available.")
 
 @st.cache_data(ttl=600)
 def get_all_savings():
