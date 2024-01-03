@@ -24,6 +24,15 @@ def load_component():
 # Display the custom component and interact with it
 data_from_storage = load_component()
 
+# Debugging: Print what 'data_from_storage' contains
+print("Data from storage:", data_from_storage)
+
+# Verify and unpack data
+if data_from_storage and isinstance(data_from_storage, list) and len(data_from_storage) == 2:
+    st.session_state.amounts, st.session_state.current_day = data_from_storage
+else:
+    print("Received unexpected data format or no data")
+
 # Update local session state with data from LocalStorage if it exists
 if data_from_storage:
     st.session_state.amounts, st.session_state.current_day = data_from_storage
