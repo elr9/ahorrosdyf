@@ -1,11 +1,9 @@
 import streamlit as st
-from supabase import create_client, Client
+from st_supabase_connection import SupabaseConnection
 import pandas as pd
 
-# Initialize Supabase client
-url: str = "https://orpaeteaseulhjpvlbnr.supabase.co"
-key: str = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9ycGFldGVhc2V1bGhqcHZsYm5yIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDQyNTM1OTAsImV4cCI6MjAxOTgyOTU5MH0.pzaNnujkF0Ddw5mpDh8JKcgE6FKHWqBnlsSHGH_wz98"
-supabase: Client = create_client(url, key)
+# Initialize connection.
+conn = st.connection("supabase",type=SupabaseConnection)
 
 def save_day(day, amount):
     data = {"day": day, "amount": amount}
