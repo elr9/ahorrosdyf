@@ -1,15 +1,23 @@
 import streamlit as st
-from st_supabase_connection import SupabaseConnection
+from supabase import create_client, Client
 import pandas as pd
 
 # Initialize connection.
-conn = st.connection("supabase",type=SupabaseConnection)
+# Uses st.cache_resource to only run once.
+@st.cache_resource
+def init_connection():
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
+    return create_client(url, key)
+
+supabase = init_connection()
 
 def save_day(day, amount):
     data = {"day": day, "amount": amount}
     # Insert the data for the given day
     supabase.table("ahorrosdyf").insert(data).execute()
 
+@st.cache_data(ttl=600)
 def get_all_savings():
     # Fetch all savings data
     data = supabase.table("ahorrosdyf").select("*").order("day", True).execute()
