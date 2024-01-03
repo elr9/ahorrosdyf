@@ -46,5 +46,5 @@ if savings_data:
 
     # Calculate the total and display it
     total_saved = df['Ahorro'].sum()
-    st.write(f"Total amount saved this year: ${total_saved}")
+    st.markdown(f"###Total amount saved this year: ${total_saved}###")
 
