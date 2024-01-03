@@ -20,7 +20,7 @@ def save_day(day, amount):
 @st.cache_data(ttl=600)
 def get_all_savings():
     # Fetch all savings data
-    data = supabase.table("ahorrosdyf").select("*").order("day", True).execute()
+    data = supabase.table("ahorrosdyf").select("*").order("day").execute()
     return data.data if data.data else []
 
 # Your Streamlit app logic here
