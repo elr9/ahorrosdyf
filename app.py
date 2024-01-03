@@ -39,6 +39,6 @@ if st.button('Dame la cantidad a ahorrar'):
 
 savings_data = get_all_savings()
 if savings_data:
-    df = pd.DataFrame(savings_data)[['Día', 'Ahorro']]
+    df = pd.DataFrame(savings_data)[['day', 'amount']]
     st.write("Así va el plan:")
     st.table(df)
